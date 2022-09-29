@@ -1,0 +1,6 @@
+{
+  "*.ts": [
+    "npx lint --fix",
+    "git add"
+  ]
+}
