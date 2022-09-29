@@ -1,6 +1,6 @@
 {
   "*.ts": [
-    "npx lint --fix",
+    "npx eslint --fix",
     "npm run test:staged",
     "git add"
   ]
