@@ -177,7 +177,6 @@ describe('SignUp Controller', () => {
       }
     }
     sut.handle(httpRequest)
-    console.log(addSpy)
     expect(addSpy).toHaveBeenCalledWith({
       name: 'any_name',
       email: 'any_email@mail.com',
