@@ -19,11 +19,15 @@ export const MongoHelper = {
     return this.client.db().collection(name)
   },
 
-  map: async (collection: any, result: InsertOneResult): Promise<AccountModel> => {
+  async mapAddAccount (collection: any, result?: InsertOneResult): Promise<AccountModel> {
     const { insertedId } = result
     const account = await collection.findOne({ _id: insertedId })
     const { _id, ...accountWithoutId } = account
+    return Object.assign({}, accountWithoutId, { id: _id })
+  },
 
+  map (collection: any): any {
+    const { _id, ...accountWithoutId } = collection
     return Object.assign({}, accountWithoutId, { id: _id })
   }
 }
