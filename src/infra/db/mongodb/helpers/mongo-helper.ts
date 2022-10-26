@@ -1,4 +1,4 @@
-import { Collection, InsertOneResult, MongoClient } from 'mongodb'
+import { Collection, InsertOneResult, MongoClient, ObjectId } from 'mongodb'
 import { AccountModel } from '../../../../domain/models/account'
 
 export const MongoHelper = {
@@ -21,7 +21,7 @@ export const MongoHelper = {
 
   async mapAddAccount (collection: any, result?: InsertOneResult): Promise<AccountModel> {
     const { insertedId } = result
-    const account = await collection.findOne({ _id: insertedId })
+    const account = await collection.findOne({ _id: new ObjectId(insertedId) })
     const { _id, ...accountWithoutId } = account
     return Object.assign({}, accountWithoutId, { id: _id })
   },
