@@ -14,7 +14,7 @@ services:
     restart: always
     command: bash -c "npm install --omit=dev && npm run debug"
     volumes:
-      - ./dist:/usr/src/green-pie-api/dist
+      - ./dist/:/usr/src/green-pie-api/dist/
       - ./package.json:/usr/src/green-pie-api/package.json
     ports:
       - "5050:5050"
