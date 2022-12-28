@@ -1,4 +1,4 @@
-import { badRequest } from './../../../helpers/http/http-helper'
+import { badRequest, noContent, serverError } from './../../../helpers/http/http-helper'
 import { AddIngredientController } from './add-ingredient-controller'
 import { AddIngredient, AddIngredientModel, HttpRequest, Validation } from './add-ingredients-controller-protocols'
 
@@ -67,5 +67,18 @@ describe('AddIngredient Controller', () => {
     const httpRequest = makeFakeRequest()
     await sut.handle(httpRequest)
     expect(addSpy).toHaveBeenCalledWith(httpRequest.body)
+  })
+
+  test('Should return 500 if AddIngredient throws', async () => {
+    const { sut, addIngredientStub } = makeSut()
+    jest.spyOn(addIngredientStub, 'add').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(serverError(new Error()))
+  })
+
+  test('Should return 204 on success', async () => {
+    const { sut } = makeSut()
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(noContent())
   })
 })
