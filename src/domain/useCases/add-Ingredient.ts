@@ -1,7 +1,7 @@
 export interface AddIngredientModel {
   name: string
   unit: string
-  amount: string
+  amount: number
 }
 
 export interface AddIngredient {
