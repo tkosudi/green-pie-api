@@ -1,7 +1,6 @@
 import { badRequest } from './../../../helpers/http/http-helper'
-import { Validation } from './../../../protocols/validation'
 import { AddIngredientController } from './add-ingredient-controller'
-import { HttpRequest } from './add-ingredients-controller-protocols'
+import { AddIngredient, AddIngredientModel, HttpRequest, Validation } from './add-ingredients-controller-protocols'
 
 const makeFakeRequest = (): HttpRequest => ({
   body: {
@@ -20,17 +19,29 @@ const makeValidation = (): Validation => {
   return new ValidationStub()
 }
 
+const makeAddIngredient = (): AddIngredient => {
+  class AddIngredientStub implements AddIngredient {
+    async add (data: AddIngredientModel): Promise<void> {
+      return await new Promise(resolve => resolve())
+    }
+  }
+  return new AddIngredientStub()
+}
+
 interface SutTypes {
   sut: AddIngredientController
   validationStub: Validation
+  addIngredientStub: AddIngredient
 }
 
 const makeSut = (): SutTypes => {
   const validationStub = makeValidation()
-  const sut = new AddIngredientController(validationStub)
+  const addIngredientStub = makeAddIngredient()
+  const sut = new AddIngredientController(validationStub, addIngredientStub)
   return {
     sut,
-    validationStub
+    validationStub,
+    addIngredientStub
   }
 }
 
@@ -48,5 +59,13 @@ describe('AddIngredient Controller', () => {
     jest.spyOn(validationStub, 'validate').mockReturnValueOnce(new Error())
     const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(badRequest(new Error()))
+  })
+
+  test('Should call Validation with correct values', async () => {
+    const { sut, addIngredientStub } = makeSut()
+    const addSpy = jest.spyOn(addIngredientStub, 'add')
+    const httpRequest = makeFakeRequest()
+    await sut.handle(httpRequest)
+    expect(addSpy).toHaveBeenCalledWith(httpRequest.body)
   })
 })
