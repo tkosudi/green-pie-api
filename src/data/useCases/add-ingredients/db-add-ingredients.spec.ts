@@ -7,16 +7,34 @@ const makeFakeIngredientData = (): AddIngredientModel => ({
   amount: 1
 })
 
+const makeAddIngredientRepository = (): AddIngredientRepository => {
+  class AddIngredientRepositoryStub implements AddIngredientRepository {
+    async add (ingredientData: AddIngredientModel): Promise<void> {
+      return await new Promise(resolve => resolve())
+    }
+  }
+  return new AddIngredientRepositoryStub()
+}
+
+interface SutTypes {
+  sut: DbAddIngredient
+  addIngredientRepositoryStub: AddIngredientRepository
+}
+
+const makeSut = (): SutTypes => {
+  const addIngredientRepositoryStub = makeAddIngredientRepository()
+  const sut = new DbAddIngredient(addIngredientRepositoryStub)
+
+  return {
+    sut,
+    addIngredientRepositoryStub
+  }
+}
+
 describe('DbAddIngredient Usecase', () => {
   test('Should call AddIngredientRepository with correct values', async () => {
-    class AddIngredientRepositoryStub implements AddIngredientRepository {
-      async add (ingredientData: AddIngredientModel): Promise<void> {
-        return await new Promise(resolve => resolve())
-      }
-    }
-    const addIngredientRepositoryStub = new AddIngredientRepositoryStub()
+    const { sut, addIngredientRepositoryStub } = makeSut()
     const addSpy = jest.spyOn(addIngredientRepositoryStub, 'add')
-    const sut = new DbAddIngredient(addIngredientRepositoryStub)
     const ingredientData = makeFakeIngredientData()
     await sut.add(ingredientData)
 
