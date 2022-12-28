@@ -40,4 +40,11 @@ describe('DbAddIngredient Usecase', () => {
 
     expect(addSpy).toHaveBeenCalledWith(ingredientData)
   })
+
+  test('Should throw if AddIngredientRepository throws', async () => {
+    const { sut, addIngredientRepositoryStub } = makeSut()
+    jest.spyOn(addIngredientRepositoryStub, 'add').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+    const promise = sut.add(makeFakeIngredientData())
+    await expect(promise).rejects.toThrow()
+  })
 })
