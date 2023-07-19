@@ -1,9 +1,10 @@
 import { badRequest } from '../../helpers/http/http-helper'
-import { Controller, HttpRequest, HttpResponse, Validation } from '../../protocols'
+import { Controller, HttpRequest, HttpResponse, Validation, AddTransaction } from './transaction-controller-protocols'
 
-export class TransactionController implements Controller {
+export class AddTransactionController implements Controller {
   constructor (
-    private readonly validation: Validation
+    private readonly validation: Validation,
+    private readonly addTransaction: AddTransaction
   ) { }
 
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
@@ -12,6 +13,16 @@ export class TransactionController implements Controller {
     if (error) {
       return badRequest(error)
     }
-    return await new Promise(resolve => resolve(null))
+
+    const { type, description, categoryId, amount } = httpRequest.body
+
+    await this.addTransaction.add({
+      type,
+      description,
+      categoryId,
+      amount
+    })
+
+    return null
   }
 }
