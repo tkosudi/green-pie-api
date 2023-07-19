@@ -4,10 +4,10 @@ import { badRequest, noContent, serverError } from '../../helpers/http/http-help
 
 const makeFakeRequest = (): HttpRequest => ({
   body: {
-    type: 'any_type',
+    type: 'debt',
     description: 'any_description',
     categoryId: 'any_categoryId',
-    amount: 'any_valor'
+    amount: 100
   }
 })
 
