@@ -1,6 +1,6 @@
-import { HttpRequest, Validation, AddTransaction, AddTransactionModel } from './transaction-controller-protocols'
-import { AddTransactionController } from './transaction-controller'
-import { badRequest } from '../../helpers/http/http-helper'
+import { HttpRequest, Validation, AddTransaction, AddTransactionModel } from './add-transaction-controller-protocols'
+import { AddTransactionController } from './add-transaction-controller'
+import { badRequest, serverError } from '../../helpers/http/http-helper'
 
 const makeFakeRequest = (): HttpRequest => ({
   body: {
@@ -68,5 +68,12 @@ describe('Transactions Controller', () => {
     const httpRequest = makeFakeRequest()
     await sut.handle(httpRequest)
     expect(addSpy).toHaveBeenCalledWith(httpRequest.body)
+  })
+
+  test('Should return 500 if AddTransaction throws', async () => {
+    const { sut, addtransactionStub } = makeSut()
+    jest.spyOn(addtransactionStub, 'add').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(serverError(new Error()))
   })
 })
