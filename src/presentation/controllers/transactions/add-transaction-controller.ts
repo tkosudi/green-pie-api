@@ -1,4 +1,4 @@
-import { badRequest, serverError } from '../../helpers/http/http-helper'
+import { badRequest, noContent, serverError } from '../../helpers/http/http-helper'
 import { Controller, HttpRequest, HttpResponse, Validation, AddTransaction } from './add-transaction-controller-protocols'
 
 export class AddTransactionController implements Controller {
@@ -24,7 +24,7 @@ export class AddTransactionController implements Controller {
         amount
       })
 
-      return null
+      return noContent()
     } catch (error) {
       return serverError(error)
     }
