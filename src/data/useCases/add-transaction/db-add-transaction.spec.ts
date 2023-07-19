@@ -8,16 +8,34 @@ const makeFakeTransactionData = (): AddTransactionModel => ({
   amount: 100
 })
 
+const makeAddtransactionRepository = (): AddTransactionRepository => {
+  class AddTransactionRepositoryStub implements AddTransactionRepository {
+    async add (transactionData: AddTransactionModel): Promise<void> {
+      return await new Promise(resolve => resolve())
+    }
+  }
+  return new AddTransactionRepositoryStub()
+}
+
+interface SutTypes {
+  sut: DbAddTransaction
+  addTransactionRepositoryStub: AddTransactionRepository
+}
+
+const makeSut = (): SutTypes => {
+  const addTransactionRepositoryStub = makeAddtransactionRepository()
+  const sut = new DbAddTransaction(addTransactionRepositoryStub)
+
+  return {
+    sut,
+    addTransactionRepositoryStub
+  }
+}
+
 describe('AddTransaction Usecase', () => {
   test('Should call AddTransactionRepository with correct values', async () => {
-    class AddTransactionRepositoryStub implements AddTransactionRepository {
-      async add (transactionData: AddTransactionModel): Promise<void> {
-        return await new Promise(resolve => resolve())
-      }
-    }
-    const addTransactionRepositoryStub = new AddTransactionRepositoryStub()
+    const { sut, addTransactionRepositoryStub } = makeSut()
     const addSpy = jest.spyOn(addTransactionRepositoryStub, 'add')
-    const sut = new DbAddTransaction(addTransactionRepositoryStub)
     const transactionData = makeFakeTransactionData()
     await sut.add(transactionData)
     expect(addSpy).toHaveBeenCalledWith(transactionData)
