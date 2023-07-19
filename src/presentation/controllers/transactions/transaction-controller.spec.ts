@@ -1,5 +1,5 @@
-import { HttpRequest, Validation } from '../../protocols'
-import { TransactionController } from './transaction-controller'
+import { HttpRequest, Validation, AddTransaction, AddTransactionModel } from './transaction-controller-protocols'
+import { AddTransactionController } from './transaction-controller'
 import { badRequest } from '../../helpers/http/http-helper'
 
 const makeFakeRequest = (): HttpRequest => ({
@@ -12,8 +12,18 @@ const makeFakeRequest = (): HttpRequest => ({
 })
 
 interface SutTypes {
-  sut: TransactionController
+  sut: AddTransactionController
   validationStub: Validation
+  addtransactionStub: AddTransaction
+}
+
+const makeAddTransaction = (): AddTransaction => {
+  class AddTransactionStub implements AddTransaction {
+    async add (data: AddTransactionModel): Promise<void> {
+      return await new Promise(resolve => resolve())
+    }
+  }
+  return new AddTransactionStub()
 }
 
 const makeValidation = (): Validation => {
@@ -27,10 +37,12 @@ const makeValidation = (): Validation => {
 
 const makeSut = (): SutTypes => {
   const validationStub = makeValidation()
-  const sut = new TransactionController(validationStub)
+  const addtransactionStub = makeAddTransaction()
+  const sut = new AddTransactionController(validationStub, addtransactionStub)
   return {
     sut,
-    validationStub
+    validationStub,
+    addtransactionStub
   }
 }
 
@@ -48,5 +60,13 @@ describe('Transactions Controller', () => {
     jest.spyOn(validationStub, 'validate').mockReturnValueOnce(new Error())
     const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(badRequest(new Error()))
+  })
+
+  test('Should call AddTransaction with correct values', async () => {
+    const { sut, addtransactionStub } = makeSut()
+    const addSpy = jest.spyOn(addtransactionStub, 'add')
+    const httpRequest = makeFakeRequest()
+    await sut.handle(httpRequest)
+    expect(addSpy).toHaveBeenCalledWith(httpRequest.body)
   })
 })
