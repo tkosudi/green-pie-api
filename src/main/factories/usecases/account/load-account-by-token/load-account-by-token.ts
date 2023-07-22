@@ -1,4 +1,4 @@
-import { AccountMongoRepository } from '../../../../../infra/db/mongodb/account/account-repository'
+import { AccountMongoRepository } from '../../../../../infra/db/mongodb/account/account-mongo-repository'
 import { LoadAccountByToken } from '../../../../../domain/useCases/load-account-by-token'
 import { DbLoadAccountByToken } from '../../../../../data/useCases/load-account-by-token/db-load-account-by-token'
 import { JwtAdapter } from '../../../../../infra/criptography/jwt-adapter/jwt-adapter'
