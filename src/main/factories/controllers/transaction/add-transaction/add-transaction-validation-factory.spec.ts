@@ -1,8 +1,8 @@
-import { RequiredFieldValidation, ValidationComposite } from '../../../../validation/validators'
-import { Validation } from '../../../../presentation/protocols/validation'
+import { RequiredFieldValidation, ValidationComposite } from '../../../../../validation/validators'
+import { Validation } from '../../../../../presentation/protocols/validation'
 import { makeAddTransactionValidation } from './add-transaction-validation-factory'
 
-jest.mock('../../../../validation/validators/validation-composite.ts')
+jest.mock('../../../../../validation/validators/validation-composite.ts')
 
 describe('AddTransactionValidation Factory', () => {
   test('Should call ValidationComposite with all validations', () => {
