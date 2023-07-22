@@ -21,7 +21,7 @@ describe('Transaction Routes', () => {
   })
 
   describe('POST /transactions', () => {
-    test('Should return 204 on transaction success', async () => {
+    test('Should return 403 on add transaction without accessToken', async () => {
       await request(app)
         .post('/api/transactions')
         .send({
@@ -30,7 +30,7 @@ describe('Transaction Routes', () => {
           categoryId: 'any_categoryId',
           amount: 100
         })
-        .expect(204)
+        .expect(403)
     })
   })
 })
