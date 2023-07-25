@@ -1,6 +1,6 @@
 {
   "name": "green-pie-api",
-  "version": "1.3.0",
+  "version": "1.3.0-rc.1",
   "description": "My financial app for management of my personal messy finances",
   "main": "index.js",
   "scripts": {
